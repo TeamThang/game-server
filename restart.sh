@@ -8,5 +8,5 @@ fi
 
 ps -ef | grep leaf-game | grep yzy | grep -v grep | awk -F' ' '{print $2}' | xargs kill -9
 sleep 2s
-nohup ./quantity &
+nohup ./leaf-game &
 echo restart leaf-game server finish !
