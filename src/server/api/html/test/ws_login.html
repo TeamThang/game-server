@@ -1,0 +1,302 @@
+<html>
+<head>
+    <title>WebSocket test</title>
+</head>
+
+<style>
+    #chat {
+        text-align: left;
+        background: #f1f1f1;
+        width: 500px;
+        min-height: 300px;
+        padding: 20px;
+    }
+    #text {
+        text-align: left;
+        width: 500px;
+        min-height: 300px;
+        padding: 20px;
+    }
+
+</style>
+
+<body onload='initButton()'>
+<center>
+    <h3>WebSocket Test</h3>
+    <container id="btnContainer"></container><br><br>
+    <textarea placeholder="say something" id="text" type="text"></textarea><br>
+    <button type="button" id="btn_connect" class="btn btn-info" onclick="connectWebsocket();">重连websocket</button>
+    <button type="button" id="btn_send" class="btn btn-info" onclick="fun_sendto();">发送</button>
+    <pre id="chat"></pre>userID
+</center>
+
+<script>
+
+    function setCookie(c_name, value, expireSeconds) {
+        var exdate = new Date();
+        exdate.setUTCSeconds(exdate.getSeconds() + expireSeconds);
+        document.cookie = c_name + "=" + escape(value) +
+                ((expireSeconds == null) ? "" : ";expires=" + exdate.toGMTString())
+    }
+
+    var token = "";
+    var data = {
+        "UserCreate": {
+            "UserCreate": {
+                "BasicInfo": {
+                    "LoginName": "test6",
+                    "Password": "123",
+                    "Mobile": "6",
+                    "Email": "6@163.com",
+                    "Source": "quantity"
+                },
+                "UserInfo": {
+                    "Name": "灭霸",
+                    "Age": 123,
+                    "Birthday": "2018-04-25 18:55:10",
+                    "Address": "太阳星星月亮"
+                }
+            }
+        },
+        "UserDelete": {
+            "UserDelete": {
+                "UserID": 50,
+            }
+        },
+        "UserUpdate": {
+            "UserUpdate": {
+                "UserID": 50,
+                "BasicInfo": {
+                    "LoginName": "test6",
+                    "Password": "1234"
+                },
+                "UserInfo": {
+                    "Name": "钢铁侠",
+                    "Age": 55,
+                    "Birthday": "2001-04-25 18:55:10",
+                    "Address": "太阳星星月亮火箭"
+                }
+            }
+        },
+        "UserQuery": {
+            "UserQuery": {
+                "UserID": 50,
+            }
+        },
+        "RightCreate": {
+            "RightCreate": {
+                    "Server":"login",
+                    "Name":"all",
+                    "Desc":"登录服务权限"
+            }
+        },
+        "RightDelete": {
+            "RightDelete": {
+                "RightID": 7,
+            }
+        },
+        "RightUpdate": {
+            "RightUpdate": {
+                    "RightID": 7,
+                    "Server":"all",
+                    "Name":"all",
+                    "Desc":"所有的权限"
+
+            }
+        },
+        "RightQuery": {
+            "RightQuery": {
+            }
+        },
+        "RightBind": {
+            "RightBind": {
+                    "UserID": 50,
+                    "RightID": 3
+            }
+        },
+        "RightUnBind": {
+            "RightUnBind": {
+                    "UserID": 48,
+                    "RightID": 3
+            }
+        },
+        "BindRightQuery": {
+            "BindRightQuery": {
+                "UserID": 50,
+            }
+        },
+        "Login": {
+            "Login": {
+                "Password": "123",
+                "LoginName": "admin",
+                "Right":{"Server":"quantity","Name": "all"}
+            }
+        },
+        "Logout": {
+            "Logout": {
+            }
+        },
+        "GetUserInfo": {
+            "GetUserInfo": {
+            }
+        },
+
+        "VerifyEmailSend": {
+            "VerifyEmailSend": {
+                "UserID": 50
+            }
+        },
+        "VerifyEmailCheck": {
+            "VerifyEmailCheck": {
+                    "UserID": 48,
+                    "Code": "pLtkM"
+            }
+        },
+        "PwdChange": {
+            "PwdChange": {
+                "UserID": 50,
+                "OldPW": "123",
+                "NewPW": "456"
+            }
+        },
+        "EmailRestPwdSend": {
+            "EmailRestPwdSend": {
+                "LoginName": "test3",
+                "ResetUrl": "www.rongshutong.com"
+            }
+        },
+        "NotifyEmailCreate": {
+            "NotifyEmailCreate": {
+                "UserID": 62,
+                "Email": "zhaoyi.yuan@bitmain.com",
+                "Subscribed": true
+            }
+        },
+        "NotifyEmailQuery": {
+            "NotifyEmailQuery": {
+                "UserID": 62,
+            }
+        },
+        "NotifyEmailSend": {
+            "NotifyEmailSend": {
+                "UserID": 62,
+                "Subject": "test",
+                "ContentType": "text/html",
+                "Content": "我只是来测试一下"
+            }
+        },
+        "NotifyEmailDelete": {
+            "NotifyEmailDelete": {
+                "EmailID": 6,
+            }
+        },
+        "NotifyEmailSub": {
+            "NotifyEmailSub": {
+                "UserID": 62,
+                "EmailID": 6,
+            }
+        },
+        "NotifyEmailUnSub": {
+            "NotifyEmailUnSub": {
+                "UserID": 62,
+                "EmailID": 6,
+            }
+        },
+        "ApiKeyCreate": {
+            "ApiKeyCreate": {
+            }
+        },
+        "ApiKeyDelete": {
+            "ApiKeyDelete": {
+                "AccessKey": "",
+            }
+        },
+        "ApiKeyQuery": {
+            "ApiKeyQuery": {
+            }
+        },
+    };
+
+    function initButton () {
+        var btnContainer = document.getElementById("btnContainer");
+        for (var key in data) {
+            var btn = document.createElement("button");
+            btn.setAttribute("type", "button");
+            btn.setAttribute("id", "btn_" + key);
+            btn.setAttribute("class", "btn btn-info");
+            btn.setAttribute("onclick", "SetData('" + key + "');");
+            btn.textContent = key;
+            btnContainer.append(btn);
+        }
+    }
+
+
+    var url = "ws://127.0.0.1:3655";
+    // var url = "ws://47.98.55.223:8653";
+    var ws = new WebSocket(url);
+    var chat = document.getElementById("chat");
+    var text = document.getElementById("text");
+    var now = function () {
+        var iso = new Date().toISOString();
+        return iso.split("T")[1].split(".")[0];
+    };
+    ws.binaryType = "arraybuffer" ;
+    ws.onmessage = function (msg) {
+        get_data(msg);
+    };
+    function SetData(dataKey){
+        text.value = "";
+        if (token) {
+            for (var key in data[dataKey]) {
+                data[dataKey][key]["token"] = token
+            }
+        }
+        text.value = JSON.stringify(data[dataKey]);
+    }
+    function connectWebsocket(){
+        ws = new WebSocket(url);
+        ws.binaryType = "arraybuffer";
+        ws.onmessage = function (msg) {
+            get_data(msg);
+        };
+    }
+
+    function get_data(msg) {
+        console.log("~~~~~~");
+        var rsp = new TextDecoder().decode(msg.data);
+        console.log("RecvData:", rsp);
+        var data = JSON.parse(rsp);
+        var line =  now() + " " + rsp + "\n";
+        chat.innerText += line;
+        if (data.hasOwnProperty("Login")) {
+            var token = data["Login"]["data"]["token"];
+            var MaxAge = data["Login"]["data"]["MaxAge"];
+            setCookie("haha", "1111", MaxAge);
+            setCookie("token", token, MaxAge);
+
+        }
+        // for (var key in data) {
+        //     if (data[key]["data"] && data[key]["data"].hasOwnProperty("token")) {
+        //         token = data[key]["data"]["token"]
+        //     }
+        // }
+    };
+    function fun_sendto() {
+        if (text.value !== "") {
+            //替换所有的换行符
+            var data = text.value.replace(/\r\n/g,"")
+            data = data.replace(/\n/g,"");
+            data = data.replace(/\\/g,"");
+            console.log("SendData: ", data);
+            var aDataArray = new TextEncoder("UTF-8").encode(data);
+            ws.send(aDataArray);
+        }
+    }
+    function uintToString(uintArray) {
+        var encodedString = String.fromCharCode.apply(null, uintArray),
+                decodedString = decodeURIComponent(escape(encodedString));
+        return decodedString;
+    };
+</script>
+</body>
+</html>

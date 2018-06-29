@@ -1,0 +1,5 @@
+site_name: 文档
+pages:
+    - 游戏后台文档: index.md
+    - 账户管理接口: account.md
+theme: readthedocs
