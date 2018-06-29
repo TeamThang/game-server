@@ -1,0 +1,16 @@
+{
+  "Redis": {
+    "Host": "127.0.0.1",
+    "Port": 6379,
+    "PassWord": "",
+    "DB": 2
+  },
+  "Postgre": {
+    "Host": "postgres-iuaw1qed.sql.tencentcdb.com",
+    "Port": 9969,
+    "User": "root_yzy",
+    "DbName": "quantity",
+    "PassWord": "Yzy^105178"
+  },
+  "LoginServer": "http://127.0.0.1:8086"
+}
