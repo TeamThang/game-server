@@ -1,4 +1,4 @@
-package gate
+package router
 
 import (
 	"server/msg"

@@ -5,7 +5,7 @@ import (
 	"server/conf"
 	"server/game"
 	"server/msg"
-	self "server/gate/http"
+	httpHandler "server/gate/router"
 )
 
 type Module struct {
@@ -29,6 +29,6 @@ func (m *Module) OnInit() {
 		HTTPAddr:        conf.Server.HTTPAddr,
 		HTTPCertFile:    conf.Server.HTTPCertFile,
 		HTTPKeyFile:     conf.Server.HTTPKeyFile,
-		ServeMux:        *self.HttpServeMux,
+		ServeMux:        *httpHandler.HttpServeMux,
 	}
 }
