@@ -9,7 +9,7 @@ import (
 	"server/login"
 )
 
-var confPath = "bin/conf/"
+var confPath = "conf/"
 
 // 初始化config.json配置文件
 func init() {
